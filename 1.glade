@@ -1,0 +1,658 @@
+<?xml version="1.0"?>
+<interface>
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-naming-policy project-wide -->
+  <object class="GtkListStore" id="liststore1">
+    <columns>
+      <!-- column-name col1 -->
+      <column type="gchararray"/>
+      <!-- column-name col2 -->
+      <column type="gchararray"/>
+      <!-- column-name col3 -->
+      <column type="gchararray"/>
+      <!-- column-name col4 -->
+      <column type="gchararray"/>
+      <!-- column-name col5 -->
+      <column type="gchararray"/>
+      <!-- column-name col6 -->
+      <column type="gchararray"/>
+      <!-- column-name col7 -->
+      <column type="gchararray"/>
+      <!-- column-name col8 -->
+      <column type="gchararray"/>
+      <!-- column-name col9 -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkWindow" id="Main">
+    <child>
+      <object class="GtkFixed" id="fixed1">
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkImage" id="image1">
+            <property name="width_request">645</property>
+            <property name="height_request">479</property>
+            <property name="visible">True</property>
+            <property name="pixbuf">3.jpg</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="Main_about">
+            <property name="label" translatable="yes">&#xFF1F;</property>
+            <property name="width_request">29</property>
+            <property name="height_request">23</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="Main_down">
+            <property name="label" translatable="yes">&#x4E0B;&#x67B6;</property>
+            <property name="width_request">100</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="x">5</property>
+            <property name="y">435</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="Main_up">
+            <property name="label" translatable="yes">&#x4E0A;&#x67B6;</property>
+            <property name="width_request">100</property>
+            <property name="height_request">25</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="x">5</property>
+            <property name="y">400</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="Main_transport">
+            <property name="label" translatable="yes">&#x7269;&#x6D41;</property>
+            <property name="width_request">100</property>
+            <property name="height_request">30</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="relief">half</property>
+          </object>
+          <packing>
+            <property name="x">280</property>
+            <property name="y">415</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="Main_sort_up">
+            <property name="label" translatable="yes">&#x5347;&#x5E8F;&#x6392;&#x5E8F;</property>
+            <property name="width_request">100</property>
+            <property name="height_request">30</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="relief">half</property>
+          </object>
+          <packing>
+            <property name="x">5</property>
+            <property name="y">130</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="Main_update">
+            <property name="label" translatable="yes">&#x7269;&#x54C1;&#x66F4;&#x65B0;</property>
+            <property name="width_request">100</property>
+            <property name="height_request">30</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="x">170</property>
+            <property name="y">415</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="Main_system_manage">
+            <property name="label" translatable="yes">&#x7CFB;&#x7EDF;&#x7BA1;&#x7406;</property>
+            <property name="width_request">100</property>
+            <property name="height_request">40</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="relief">half</property>
+          </object>
+          <packing>
+            <property name="x">540</property>
+            <property name="y">409</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="Main_search">
+            <property name="label" translatable="yes">&#x67E5;&#x627E;</property>
+            <property name="width_request">70</property>
+            <property name="height_request">35</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="x">490</property>
+            <property name="y">78</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow" id="scrolledwindow1">
+            <property name="width_request">500</property>
+            <property name="height_request">269</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <child>
+              <object class="GtkTreeView" id="Main_treeview">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="model">liststore1</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="x">110</property>
+            <property name="y">127</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="Main_key">
+            <property name="width_request">360</property>
+            <property name="height_request">35</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="invisible_char">&#x25CF;</property>
+          </object>
+          <packing>
+            <property name="x">5</property>
+            <property name="y">78</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="Main_quit">
+            <property name="label" translatable="yes">&#x9000;&#x51FA;</property>
+            <property name="width_request">100</property>
+            <property name="height_request">30</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="x">390</property>
+            <property name="y">415</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkComboBox" id="combobox1">
+            <property name="width_request">110</property>
+            <property name="height_request">35</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="x">370</property>
+            <property name="y">78</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="Main_sort_down">
+            <property name="label" translatable="yes">&#x964D;&#x5E8F;&#x6392;&#x5E8F;</property>
+            <property name="width_request">100</property>
+            <property name="height_request">30</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="x">5</property>
+            <property name="y">165</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="Main_system_init">
+            <property name="label" translatable="yes">&#x521D;&#x59CB;&#x5316;</property>
+            <property name="width_request">70</property>
+            <property name="height_request">35</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="x">570</property>
+            <property name="y">78</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkWindow" id="Transport">
+    <child>
+      <object class="GtkFixed" id="fixed2">
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkImage" id="image2">
+            <property name="width_request">591</property>
+            <property name="height_request">473</property>
+            <property name="visible">True</property>
+            <property name="pixbuf">3.jpg</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkComboBoxEntry" id="Transport_city1">
+            <property name="width_request">340</property>
+            <property name="height_request">50</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="x">140</property>
+            <property name="y">80</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkComboBoxEntry" id="Transport_city2">
+            <property name="width_request">340</property>
+            <property name="height_request">50</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="x">140</property>
+            <property name="y">150</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="Transport_time">
+            <property name="width_request">180</property>
+            <property name="height_request">40</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="invisible_char">&#x25CF;</property>
+          </object>
+          <packing>
+            <property name="x">93</property>
+            <property name="y">303</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="Transport_c_route">
+            <property name="width_request">180</property>
+            <property name="height_request">40</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="invisible_char">&#x25CF;</property>
+          </object>
+          <packing>
+            <property name="x">371</property>
+            <property name="y">231</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="Transport_t_route">
+            <property name="width_request">180</property>
+            <property name="height_request">40</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="invisible_char">&#x25CF;</property>
+          </object>
+          <packing>
+            <property name="x">93</property>
+            <property name="y">231</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="Transport_cost">
+            <property name="width_request">180</property>
+            <property name="height_request">40</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="invisible_char">&#x25CF;</property>
+          </object>
+          <packing>
+            <property name="x">371</property>
+            <property name="y">303</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="Transport_search">
+            <property name="label" translatable="yes">&#x67E5;&#x627E;</property>
+            <property name="width_request">100</property>
+            <property name="height_request">55</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="x">140</property>
+            <property name="y">390</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="Transport_quit">
+            <property name="label" translatable="yes">&#x9000;&#x51FA;</property>
+            <property name="width_request">100</property>
+            <property name="height_request">55</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="x">380</property>
+            <property name="y">390</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label3">
+            <property name="width_request">84</property>
+            <property name="height_request">40</property>
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">&#x4EF7;&#x683C;</property>
+          </object>
+          <packing>
+            <property name="x">286</property>
+            <property name="y">232</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label4">
+            <property name="width_request">100</property>
+            <property name="height_request">50</property>
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">label</property>
+          </object>
+          <packing>
+            <property name="x">35</property>
+            <property name="y">80</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label2">
+            <property name="width_request">100</property>
+            <property name="height_request">50</property>
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">label</property>
+          </object>
+          <packing>
+            <property name="x">35</property>
+            <property name="y">150</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label5">
+            <property name="width_request">84</property>
+            <property name="height_request">40</property>
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">&#x8DEF;&#x7EBF;</property>
+          </object>
+          <packing>
+            <property name="x">286</property>
+            <property name="y">303</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label6">
+            <property name="width_request">84</property>
+            <property name="height_request">40</property>
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">&#x4EF7;&#x683C;</property>
+          </object>
+          <packing>
+            <property name="x">8</property>
+            <property name="y">232</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label7">
+            <property name="width_request">84</property>
+            <property name="height_request">40</property>
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">&#x8DEF;&#x7EBF;</property>
+          </object>
+          <packing>
+            <property name="x">8</property>
+            <property name="y">303</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label10">
+            <property name="width_request">84</property>
+            <property name="height_request">30</property>
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">&#x6700;&#x5C11;&#x65F6;&#x95F4;:</property>
+          </object>
+          <packing>
+            <property name="x">8</property>
+            <property name="y">200</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label11">
+            <property name="width_request">84</property>
+            <property name="height_request">32</property>
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">&#x6700;&#x5C11;&#x82B1;&#x8D39;:</property>
+          </object>
+          <packing>
+            <property name="x">286</property>
+            <property name="y">200</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkWindow" id="About">
+    <child>
+      <object class="GtkFixed" id="fixed3">
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkImage" id="image4">
+            <property name="width_request">587</property>
+            <property name="height_request">460</property>
+            <property name="visible">True</property>
+            <property name="pixbuf">1.jpg</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label1">
+            <property name="width_request">510</property>
+            <property name="height_request">305</property>
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">label</property>
+          </object>
+          <packing>
+            <property name="x">38</property>
+            <property name="y">80</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="About_quit">
+            <property name="label" translatable="yes">&#x9000;&#x51FA;</property>
+            <property name="width_request">100</property>
+            <property name="height_request">57</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="x">396</property>
+            <property name="y">389</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="About_agree">
+            <property name="label" translatable="yes">&#x540C;&#x610F;</property>
+            <property name="width_request">100</property>
+            <property name="height_request">57</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="x">88</property>
+            <property name="y">389</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkWindow" id="Update">
+    <child>
+      <object class="GtkFixed" id="fixed4">
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkImage" id="image3">
+            <property name="width_request">602</property>
+            <property name="height_request">466</property>
+            <property name="visible">True</property>
+            <property name="pixbuf">3.jpg</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkComboBoxEntry" id="Update_combox">
+            <property name="width_request">314</property>
+            <property name="height_request">50</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="x">204</property>
+            <property name="y">80</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="Update_input">
+            <property name="width_request">314</property>
+            <property name="height_request">50</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="invisible_char">&#x25CF;</property>
+          </object>
+          <packing>
+            <property name="x">204</property>
+            <property name="y">194</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="Update_cancel">
+            <property name="label" translatable="yes">&#x9000;&#x51FA;</property>
+            <property name="width_request">120</property>
+            <property name="height_request">60</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="on_Update_cancel_clicked"/>
+          </object>
+          <packing>
+            <property name="x">398</property>
+            <property name="y">340</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="Update_ok">
+            <property name="label" translatable="yes">&#x786E;&#x5B9A;</property>
+            <property name="width_request">120</property>
+            <property name="height_request">60</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="on_Update_ok_clicked"/>
+          </object>
+          <packing>
+            <property name="x">104</property>
+            <property name="y">340</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHandleBox" id="handlebox1">
+            <property name="width_request">100</property>
+            <property name="height_request">50</property>
+            <property name="visible">True</property>
+            <property name="handle_position">right</property>
+            <child>
+              <object class="GtkLabel" id="label9">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">&#x66F4;&#x65B0;&#x4FE1;&#x606F;</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="x">104</property>
+            <property name="y">194</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHandleBox" id="handlebox2">
+            <property name="width_request">100</property>
+            <property name="height_request">50</property>
+            <property name="visible">True</property>
+            <property name="handle_position">right</property>
+            <child>
+              <object class="GtkLabel" id="label8">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">label</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="x">104</property>
+            <property name="y">80</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkWindow" id="file_window">
+    <child>
+      <object class="GtkFixed" id="fixed5">
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkFileChooserWidget" id="filechooser">
+            <property name="width_request">656</property>
+            <property name="height_request">430</property>
+            <property name="visible">True</property>
+            <property name="orientation">vertical</property>
+          </object>
+          <packing>
+            <property name="x">4</property>
+            <property name="y">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="file_window_ok">
+            <property name="label" translatable="yes">&#x786E;&#x5B9A;</property>
+            <property name="width_request">100</property>
+            <property name="height_request">42</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="x">416</property>
+            <property name="y">447</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="file_window_cancel">
+            <property name="label" translatable="yes">&#x53D6;&#x6D88;</property>
+            <property name="width_request">100</property>
+            <property name="height_request">43</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="x">532</property>
+            <property name="y">446</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
