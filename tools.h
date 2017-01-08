@@ -6,6 +6,13 @@
 #include <gtk/gtk.h>
 #include <string>
 #include <stdlib.h>
+#include <boost/algorithm/string/classification.hpp>  
+#include <boost/algorithm/string/split.hpp>  
+#include <iostream>
+#include <stdio.h>
+#include <cstdlib>
+#include <string.h>
+#include <time.h>
 
 using namespace std;
 
@@ -72,14 +79,14 @@ typedef struct Node {
 	struct Node *Ahead,*Next;
 	string name;
 	string city;
-	int  count; //库存
-	int  price; 
+	string  count; //库存
+	string  price; 
 	string logo; //品牌
 	string material; // 材质
 	string style; //款式
 	string color;
 	string function;//功能特点
-
+	int int_price;
 }GoodNode, *pGoodNode;
 
 
@@ -94,6 +101,11 @@ void on_Main_transport_clicked(GtkWidget *button,gpointer userdata);
 void on_Main_sort_down_clicked(GtkWidget *button,gpointer userdata);
 void on_Main_update_clicked(GtkWidget *button,gpointer userdata);
 void on_Update_cancel_clicked(GtkWidget *button,gpointer userdata);
+void on_Transport_cancel_clicked(GtkWidget *button,gpointer userdata);
+void on_Main_treeview_clicked(GtkWidget *button,gpointer userdata);
+void on_Update_ok_clicked(GtkWidget *button,gpointer userdata);
+void on_Main_down_clicked(GtkWidget *button,gpointer userdata);
+
 
 
 

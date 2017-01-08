@@ -104,11 +104,11 @@ void debug_popbox(const gchar * str, GtkWidget * widget, GtkTreeIter* iter)
 	gtk_widget_destroy(dialog);			//销毁dialog对话框
 }
 
-void windowShow (GtkWidget * widget, gpointer data) {
+void windowShow (GtkWidget * widget) {
 	gtk_widget_show_all (widget);
 }
 
-void windowHide (GtkWidget * widget, gpointer data) {
+void windowHide (GtkWidget * widget) {
 	gtk_widget_hide (widget);
 }
 

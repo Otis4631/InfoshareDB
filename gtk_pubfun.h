@@ -81,8 +81,8 @@ bool add_to_list(GtkWidget * widget, vector<string> * colValues, int colNum);
  * @return £¨ÎÞ£©
  *
  */
-void windowShow (GtkWidget * widget, gpointer data=NULL);
-void windowHide (GtkWidget * widget, gpointer data=NULL);
+void windowShow (GtkWidget * widget,gpointer data = NULL);
+void windowHide (GtkWidget * widget,gpointer data = NULL);
 
 
 
@@ -97,6 +97,8 @@ void windowHide (GtkWidget * widget, gpointer data=NULL);
  *
  */
 void debug_popbox(const gchar * str, GtkWidget * widget=NULL, GtkTreeIter* iter=NULL);
+
+
 
 #endif
 

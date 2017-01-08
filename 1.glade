@@ -24,6 +24,32 @@
       <column type="gchararray"/>
     </columns>
   </object>
+  <object class="GtkListStore" id="liststore2">
+    <columns>
+      <!-- column-name Col1 -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">1.        &#x5546;&#x54C1;&#x540D;&#x79F0;</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">2.        &#x4E70;&#x5BB6;&#x5730;&#x70B9;</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">3.        &#x5B58;&#x8D27;</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">4.        &#x4EF7;&#x94B1;</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">5.        &#x54C1;&#x724C;</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">6.        &#x6750;&#x8D28;</col>
+      </row>
+    </data>
+  </object>
   <object class="GtkWindow" id="Main">
     <child>
       <object class="GtkFixed" id="fixed1">
@@ -236,6 +262,7 @@
     </child>
   </object>
   <object class="GtkWindow" id="Transport">
+    <property name="modal">True</property>
     <child>
       <object class="GtkFixed" id="fixed2">
         <property name="visible">True</property>
@@ -336,7 +363,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="Transport_quit">
+          <object class="GtkButton" id="Transport_cancel">
             <property name="label" translatable="yes">&#x9000;&#x51FA;</property>
             <property name="width_request">100</property>
             <property name="height_request">55</property>
@@ -504,6 +531,8 @@
     </child>
   </object>
   <object class="GtkWindow" id="Update">
+    <property name="is_focus">True</property>
+    <property name="modal">True</property>
     <child>
       <object class="GtkFixed" id="fixed4">
         <property name="visible">True</property>
@@ -516,17 +545,6 @@
           </object>
         </child>
         <child>
-          <object class="GtkComboBoxEntry" id="Update_combox">
-            <property name="width_request">314</property>
-            <property name="height_request">50</property>
-            <property name="visible">True</property>
-          </object>
-          <packing>
-            <property name="x">204</property>
-            <property name="y">80</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkEntry" id="Update_input">
             <property name="width_request">314</property>
             <property name="height_request">50</property>
@@ -535,7 +553,7 @@
             <property name="invisible_char">&#x25CF;</property>
           </object>
           <packing>
-            <property name="x">204</property>
+            <property name="x">209</property>
             <property name="y">194</property>
           </packing>
         </child>
@@ -596,7 +614,7 @@
             <child>
               <object class="GtkLabel" id="label8">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">label</property>
+                <property name="label" translatable="yes">&#x66F4;&#x65B0;&#x9009;&#x9879;</property>
               </object>
             </child>
           </object>
@@ -605,10 +623,31 @@
             <property name="y">80</property>
           </packing>
         </child>
+        <child>
+          <object class="GtkComboBox" id="Update_combox">
+            <property name="width_request">314</property>
+            <property name="height_request">50</property>
+            <property name="visible">True</property>
+            <property name="model">liststore2</property>
+            <property name="wrap_width">1</property>
+            <property name="column_span_column">10</property>
+            <child>
+              <object class="GtkCellRendererText" id="cellrenderertext1"/>
+              <attributes>
+                <attribute name="text">0</attribute>
+              </attributes>
+            </child>
+          </object>
+          <packing>
+            <property name="x">209</property>
+            <property name="y">80</property>
+          </packing>
+        </child>
       </object>
     </child>
   </object>
   <object class="GtkWindow" id="file_window">
+    <property name="modal">True</property>
     <child>
       <object class="GtkFixed" id="fixed5">
         <property name="visible">True</property>

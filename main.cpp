@@ -31,6 +31,8 @@ GtkTreeView *Main_treeview;
 GtkWindow	*Main;
 
 GtkWidget *liststore1;
+GtkWidget *liststore2;
+
 
 GtkEntry	*Main_key;
 /***************** 主界面声明结束 **********************/
@@ -45,7 +47,7 @@ GtkEntry	* Transport_c_route;
 GtkEntry 	* Transport_time;
 GtkEntry 	* Transport_cost;
 GtkButton 	* Transport_search;
-GtkButton 	* Transport_quit;
+GtkButton 	* Transport_cancel;
 
 GtkWindow	* Transport;
 /*****************    物流界面结束   **********************/
@@ -86,7 +88,7 @@ void get_widgets (GtkBuilder * gb){
 	w_(gb, BUTTON, Main_quit);
 	
 	w_(gb, BUTTON, Transport_search);
-	w_(gb, BUTTON, Transport_quit);
+	w_(gb, BUTTON, Transport_cancel);
 	
 	w_(gb, BUTTON, Update_cancel);
 	w_(gb, BUTTON, Update_ok);
@@ -110,6 +112,7 @@ void get_widgets (GtkBuilder * gb){
 	
 	w_(gb, TREE_VIEW, Main_treeview);
 	w_(gb, WIDGET,liststore1);
+	w_(gb, WIDGET,liststore2);
 	w_(gb,COMBO_BOX,Update_combox);
 	
 	
@@ -150,28 +153,31 @@ int main (int argc, char * argv[])
 	/***************************   信号绑定回调函数 *****************************/
 	g_signal_connect(Main_search,"clicked",G_CALLBACK(on_Main_search_clicked),NULL);
 	g_signal_connect(Main,"delete_event",G_CALLBACK(gtk_main_quit),NULL);
-	g_signal_connect(Update,"delete_event",G_CALLBACK(windowHide(GTK_WINDOW(Update))),NULL);
-	g_signal_connect(Transport,"delete_event",G_CALLBACK(windowHide),NULL);
+	g_signal_connect(Update,"delete_event",GTK_SIGNAL_FUNC(gtk_widget_hide),GTK_WIDGET(Update));
+	g_signal_connect(Transport,"delete_event",GTK_SIGNAL_FUNC(gtk_widget_hide),GTK_WIDGET(Transport));
+	g_signal_connect(file_window,"delete_event",GTK_SIGNAL_FUNC(gtk_widget_hide),GTK_WIDGET(file_window));
 	
+	g_signal_connect(Main_quit,"clicked",G_CALLBACK(gtk_main_quit),NULL);
 	g_signal_connect(Main_system_init,"clicked",G_CALLBACK(on_Main_system_init_clicked),NULL);
 	g_signal_connect(Main_update,"clicked",G_CALLBACK(on_Main_update_clicked),NULL);
 	g_signal_connect(Main_sort_up,"clicked",G_CALLBACK(on_Main_sort_up_clicked),NULL);
 	g_signal_connect(Main_sort_down,"clicked",G_CALLBACK(on_Main_sort_down_clicked),NULL);
-	//g_signal_connect(Main_down,"clicked",G_CALLBACK(on_Main_down_clicked),NULL);
+	g_signal_connect(Main_down,"clicked",G_CALLBACK(on_Main_down_clicked),NULL);
+	g_signal_connect(Main_up,"clicked",G_CALLBACK(on_Main_down_clicked),NULL);
 	g_signal_connect(Main_transport,"clicked",G_CALLBACK(on_Main_transport_clicked),NULL);
 	//g_signal_connect(Main_about,"clicked",G_CALLBACK(on_Main_about_clicked),NULL);
 	
-	//g_signal_connect(Main_treeview, "row_activated",G_CALLBACK(on_Main_treeview_clicked),NULL);
+	g_signal_connect(Main_treeview, "row_activated",G_CALLBACK(on_Main_treeview_clicked),NULL);
 	
 	//g_signal_connect(Transport_search,"clicked",G_CALLBACK(on_Transport_search_clicked),NULL);
-	//g_signal_connect(Transport_quit,"clicked",G_CALLBACK(on_Transport_quit_clicked),NULL);
+	g_signal_connect(Transport_cancel,"clicked",G_CALLBACK(on_Transport_cancel_clicked),NULL);
 	
 	
-	//g_signal_connect(Update_ok,"clicked",G_CALLBACK(on_Update_ok_clicked),NULL);
-	//g_signal_connect(Update_cancel,"clicked",G_CALLBACK(on_Update_cancel_clicked),NULL);
+	g_signal_connect(Update_ok,"clicked",G_CALLBACK(on_Update_ok_clicked),NULL);
+	g_signal_connect(Update_cancel,"clicked",G_CALLBACK(on_Update_cancel_clicked),NULL);
 	
 	
-	g_signal_connect(file_window,"delete_event",G_CALLBACK(windowHide),NULL);
+	
 	g_signal_connect(file_window_ok,"clicked",G_CALLBACK(on_file_window_ok_clicked),NULL);
 	g_signal_connect(file_window_cancel,"clicked",G_CALLBACK(on_file_window_cancel_clicked),NULL);
 	gtk_main ();//守护程序，保证显示的窗口不退出
@@ -186,7 +192,9 @@ void mywidget_init()
 		exit(0);
 	}
 	init_list(GTK_WIDGET(Main_treeview), LIST_COLNUM);
-
+	GoodHead->Next = GoodTail;
+	GoodTail->Next = GoodHead->Ahead = NULL;
+	GoodTail->Ahead = GoodHead;
 	gtk_widget_show_all (GTK_WIDGET(Main));
 }
 	
