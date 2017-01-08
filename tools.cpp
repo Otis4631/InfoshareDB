@@ -6,6 +6,7 @@
 #include<iostream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <cstdlib>
 void BKDHash(string Aim, int &u, int &v){ // 字符串哈希
 	int HH1 = 0, HH2 = 0, seed1 = 137, seed2 = 131;
 	for(int i = 0; Aim[i]; i ++){
@@ -31,9 +32,27 @@ bool Cmp(pGoodNode u, pGoodNode v){ // 判断
 }
 
 void Swap(pGoodNode &u, pGoodNode &v){ // 交换
-	swap(*u, *v);
-	swap(u->Next, v->Next);
-	swap(u->Ahead, v->Ahead);
+	if(u == v) return;
+	if(u->Next == v){
+		u->Next = v->Next;
+		v->Ahead = u->Ahead;
+		u->Ahead = v;
+		v->Next = u;
+		u->Next->Ahead = u;
+		v->Ahead->Next = v;
+	}
+	else{
+		pGoodNode Th = u->Next, Tt = v->Ahead;
+		u->Next = v->Next;
+		v->Ahead = u->Ahead;
+		v->Ahead->Next = v;
+		u->Next->Ahead = u;
+		v->Next = Th;
+		u->Ahead = Tt;
+		Th->Ahead = v;
+		Tt->Next = u;
+	}
+	swap(u, v);
 }
 
 
@@ -50,11 +69,12 @@ void Quick_Sort(pGoodNode Begin, pGoodNode End){ // 快排
 		j = j->Next;
 	}
 	Swap(Begin, i);
-	Quick_Sort(Begin, i);
-	Quick_Sort(i->Next, End);
+	Quick_Sort(Begin, i, Status);
+	Quick_Sort(i->Next, End, Status);
 }
 
 //----------------------------------------------排序结束--------------------------------------------------------
+
 
 void init_struct_node (Node *node,vector<string> * ary) {
 		node->name = ary->at(0);
@@ -85,11 +105,33 @@ void init_struct_node (Node *node,vector<string> * ary) {
 		BKDHash(node->function,node->Hasharr[17], node->Hasharr[18]);
 
 }
+
+
 typedef struct Hash{
 	pGoodNode To;
 	struct Hash *Next;
 } Hash;
 Hash HashChart[55][60][60];
+
+//----------------------------------------------建立哈希表------------------------------------------------------
+
+void HashNode(pGoodNode Tmp){ // 顺延建立哈希
+	string Aim = Tmp->name;
+	int p1 = 0, p2 = 0, p3 = 0;
+	for(int i = 0; Aim[i] = '\0'; i ++){
+		if(i%3 == 0) p1 += Aim[i];
+		else if(i%3 == 1) p2 += Aim[i];
+		else p3 += Aim[i];
+	}
+	p1 = (p1%53 + 53)%53;
+	p2 = (p2%57 + 57)%57;
+	p3 = (p3%59 + 59)%59;
+	Hash TTmp = new Hash;
+	TTmp->To = Tmp;
+	TTmp->Next = HashChart[p1][p2][p3];
+	HashChart[p1][p2][p3] = TTmp;
+}
+
 
 /*--------------------------------Main_system_init--------------------------*/
 void on_Main_system_init_clicked(GtkWidget * button,gpointer userdata){
@@ -104,8 +146,10 @@ void on_file_window_ok_clicked(GtkWidget *button,gpointer userdata){
 	}
 	else {
 		vector<string> ary;
-		
-		GoodHead->Next = NULL;
+		memset(HashChart, NULL, sizeof(HashChart));
+		GoodHead->Next = GoodTail;
+		GoodTail->Next = GoodHead->Ahead = NULL;
+		GoodTail->Ahead = GoodHead;
 		//GoodTail = GoodHead;
 		pGoodNode p;
 		
@@ -122,22 +166,19 @@ void on_file_window_ok_clicked(GtkWidget *button,gpointer userdata){
 			//---------------------------顺序建立链表，AllGoodHead 为头节点，AllGoodTail 为未节点。
 			p = new Node; 			
 			(*p) = onenode;
-			p->Ahead = GoodTail;
+			p->Ahead = GoodHead;
 			p->Next = GoodHead->Next;
+			p->Next->Ahead = p;
 			GoodHead->Next = p;
 			//-------------------------------------------------------------------------------------
 			
+			HashNode(p);
 			add_to_list (liststore1, &ary,LIST_COLNUM );
 		}	
 	}
 	
 	gtk_widget_hide(GTK_WIDGET(file_window));
 }
-
-
-
-
-
 void on_file_window_cancel_clicked(GtkWidget *button,gpointer userdata){
 	gtk_widget_hide(GTK_WIDGET(file_window));
 }
@@ -152,32 +193,34 @@ void on_Main_sort_up_clicked(GtkWidget *button,gpointer userdata){
 	GtkListStore * liststore;
 	liststore = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(Main_treeview)));
 	gtk_list_store_clear(liststore);
-	Quick_Sort(GoodHead->Next,NULL);
+	if(GoodHead->count == 0){
+		Quick_Sort(GoodHead->Next,GoodTail);
+		GoodHead->count = 1;
+	}
 
 	GtkTreeIter iter;
 	pGoodNode p ;
 	p = GoodHead->Next;
 
 
-	while(p != NULL){
+	while(p != GoodTail){
 		
-		g_print("1 %s\n",(p->name).c_str());
-		//printf("%s\n",GoodHead->Next->name);
-		gtk_list_store_append(liststore, &iter);
-		g_print("2 %s\n",(p->name).c_str());
-		
-		gtk_list_store_set (liststore, &iter, 0, (p->name).c_str(), NULL);
+		char  price[20];
+		char  count[20];
+		sprintf(count,"%d",p->count);
+		sprintf(price,"%d",p->price);
 
-		gtk_list_store_set (liststore, &iter, 1, (p->city).c_str(), NULL);
-g_print("%s\n",(p->city).c_str());
-		gtk_list_store_set (liststore, &iter, 2, (p->city).c_str(), NULL);
-		gtk_list_store_set (liststore, &iter, 3, (p->city).c_str(), NULL);
-		gtk_list_store_set (liststore, &iter, 4, (p->logo).c_str(), NULL);
-g_print("%s\n",(p->logo).c_str());
-		gtk_list_store_set (liststore, &iter, 5, (p->material).c_str(), NULL);
-		gtk_list_store_set (liststore, &iter, 6, (p->style).c_str(), NULL);
-		gtk_list_store_set (liststore, &iter, 7, (p->color).c_str(), NULL);
-		gtk_list_store_set (liststore, &iter, 8, (p->function).c_str(), NULL);
+		gtk_list_store_append(liststore, &iter);
+		
+		gtk_list_store_set (liststore, &iter, 0, (p->name).c_str(), -1);
+		gtk_list_store_set (liststore, &iter, 1, (p->city).c_str(), -1);
+		gtk_list_store_set (liststore, &iter, 2, (count), -1);
+		gtk_list_store_set (liststore, &iter, 3, (price), -1);
+		gtk_list_store_set (liststore, &iter, 4, (p->logo).c_str(), -1);
+		gtk_list_store_set (liststore, &iter, 5, (p->material).c_str(), -1);
+		gtk_list_store_set (liststore, &iter, 6, (p->style).c_str(),-1);
+		gtk_list_store_set (liststore, &iter, 7, (p->color).c_str(), -1);
+		gtk_list_store_set (liststore, &iter, 8, (p->function).c_str(), -1);
 		
 		p = p->Next;
 	}
@@ -186,6 +229,43 @@ g_print("%s\n",(p->logo).c_str());
 void on_Main_transport_clicked(GtkWidget *button,gpointer userdata){
 	windowShow(GTK_WIDGET(Transport));
 }
+void on_Main_sort_down_clicked(GtkWidget *button,gpointer userdata){
+	GtkListStore * liststore;
+	liststore = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(Main_treeview)));
+	gtk_list_store_clear(liststore);
+	if(GoodHead->count == 0){
+		Quick_Sort(GoodHead->Next,GoodTail);
+		GoodHead->count = 1;
+	}
+
+	GtkTreeIter iter;
+	pGoodNode p ;
+	p = GoodTail->Ahead;
+
+
+	while(p != GoodHead){
+		
+		char  price[20];
+		char  count[20];
+		sprintf(count,"%d",p->count);
+		sprintf(price,"%d",p->price);
+
+		gtk_list_store_append(liststore, &iter);
+		
+		gtk_list_store_set (liststore, &iter, 0, (p->name).c_str(), -1);
+		gtk_list_store_set (liststore, &iter, 1, (p->city).c_str(), -1);
+		gtk_list_store_set (liststore, &iter, 2, (count), -1);
+		gtk_list_store_set (liststore, &iter, 3, (price), -1);
+		gtk_list_store_set (liststore, &iter, 4, (p->logo).c_str(), -1);
+		gtk_list_store_set (liststore, &iter, 5, (p->material).c_str(), -1);
+		gtk_list_store_set (liststore, &iter, 6, (p->style).c_str(),-1);
+		gtk_list_store_set (liststore, &iter, 7, (p->color).c_str(), -1);
+		gtk_list_store_set (liststore, &iter, 8, (p->function).c_str(), -1);
+		
+		p = p->Ahead;
+	}
+}
+
 
 
 
