@@ -92,6 +92,8 @@ void on_Main_update_clicked(GtkWidget * button,gpointer userdata);
 void on_Main_sort_up_clicked(GtkWidget * button,gpointer userdata);
 void on_Main_transport_clicked(GtkWidget *button,gpointer userdata);
 void on_Main_sort_down_clicked(GtkWidget *button,gpointer userdata);
+void on_Main_update_clicked(GtkWidget *button,gpointer userdata);
+void on_Update_cancel_clicked(GtkWidget *button,gpointer userdata);
 
 
 
@@ -117,4 +119,5 @@ void on_Main_sort_down_clicked(GtkWidget *button,gpointer userdata);
 
 
 
-#endif
+
+#endif

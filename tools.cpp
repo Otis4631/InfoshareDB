@@ -131,6 +131,88 @@ void HashNode(pGoodNode Tmp){ // 顺延建立哈希
 	TTmp->Next = HashChart[p1][p2][p3];
 	HashChart[p1][p2][p3] = TTmp;
 }
+/*
+pGoodNode HashFind(pGoodNode Tmp){ // 查找
+	string Aim = Tmp->name;
+	int p1 = 0, p2 = 0, p3 = 0;
+	for(int i = 0; Aim[i] != '\0'; i ++){
+		if(i%3 == 0) p1 += Aim[i];
+		else if(i%3 == 1) p2 += Aim[i];
+		else p3 += Aim[i];
+	}
+	p1 = (p1%53 + 53)%53;
+	p2 = (p2%57 + 57)%57;
+	p3 = (p3%59 + 59)%59;
+	Hash *TT = HashChart[p1][p2][p3];
+	if(TT != NULL){
+		while(TT != NULL){
+			if(Aim == TT->To->name){
+				break;
+			}
+			TT = TT->Next;
+		}
+	}
+	return TT;
+}*/
+
+void Free_Hash(){ // 释放哈希
+	Hash *p1, *p2;
+	for(int i = 0; i < 53; i ++){
+		for(int j = 0; j < 57; j ++){
+			for(int k = 0; k < 59; k ++){
+				if(HashChart[i][j][k] == NULL) continue;
+				p1 = HashChart[i][j][k];
+				HashChart[i][j][k] = NULL;
+				while(p1 != NULL){
+					p2 = p1->Next;
+					delete p1;
+					p1 = p2;
+				}
+			}
+		}
+	}
+}
+
+void Free_Node(pGoodNode Begin, pGoodNode End){ // 释放内存
+	pGoodNode Tmp;
+	while(Begin->Next != End){
+		Tmp = Begin->Next;
+		Begin->Next = Tmp->Next;
+		delete Tmp;
+	}
+	End->Ahead = Begin;
+}
+
+
+//----------------------------------------------查找------------------------------------------------------------
+
+bool Judge(pGoodNode Temp, int *w, int sum){
+	if(!sum) return true;
+	int record = 1;
+	for(int i = 1; i <= 9; i ++){
+		if(*(w + record*2+1) == Temp->Hasharr[i*2-1] && *(w + record*2+2) == Temp->Hasharr[i*2]) record ++;
+		if(record == sum) break;
+	}
+	return record == sum;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*--------------------------------Main_system_init--------------------------*/
@@ -147,10 +229,8 @@ void on_file_window_ok_clicked(GtkWidget *button,gpointer userdata){
 	else {
 		gtk_list_store_clear(GTK_LIST_STORE(liststore1));
 		vector<string> ary;
-		memset(HashChart, NULL, sizeof(HashChart));
-		GoodHead->Next = GoodTail;
-		GoodTail->Next = GoodHead->Ahead = NULL;
-		GoodTail->Ahead = GoodHead;
+		Free_Hash();
+		Free_Node(GoodHead, GoodTail);
 		GoodHead->count = 0;
 		//GoodTail = GoodHead;
 		pGoodNode p;
@@ -184,7 +264,7 @@ void on_file_window_ok_clicked(GtkWidget *button,gpointer userdata){
 void on_file_window_cancel_clicked(GtkWidget *button,gpointer userdata){
 	gtk_widget_hide(GTK_WIDGET(file_window));
 }
-void on_Main_search_clicked(GtkWidget * button,gpointer userdata){}
+
 void on_Main_update_clicked(GtkWidget * button,gpointer userdata){
 	gtk_widget_show(GTK_WIDGET(Update));
 }
@@ -268,7 +348,54 @@ void on_Main_sort_down_clicked(GtkWidget *button,gpointer userdata){
 	}
 }
 
+void on_Main_search_clicked(GtkWidget *button,gpointer userdata){
+	int KEY[20];
+	char Get_Str[300];
+	strcpy(Get_Str, gtk_entry_get_text(GTK_ENTRY(Main_key)));
+	string keke;
+	int num = 0, last = 0, pos;
+	while(1){
+		while(Get_Str[pos] == ' ') pos ++;
+		last = pos;
+		while(Get_Str[pos] != ' ' && Get_Str[pos] != '\0') pos ++;
+		if(Get_Str[pos] == '\0') break;
+		BKDHash(keke.assign(Get_Str, last, pos - last), KEY[num+1], KEY[num+2]);
+		num += 2;
+	}
+	GtkListStore * liststore;
+	GtkTreeIter iter;
+	liststore = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(Main_treeview)));
+	gtk_list_store_clear(GTK_LIST_STORE(liststore));
+	pGoodNode p = GoodHead->Next;
+	while(p != GoodTail){
+		if(Judge(p, KEY, num/2)){
+			char  price[20];
+			char  count[20];
+			sprintf(count,"%d",p->count);
+			sprintf(price,"%d",p->price);
+			gtk_list_store_append(liststore, &iter);
+			gtk_list_store_set (liststore, &iter, 0, (p->name).c_str(), -1);
+			gtk_list_store_set (liststore, &iter, 1, (p->city).c_str(), -1);
+			gtk_list_store_set (liststore, &iter, 2, (count), -1);
+			gtk_list_store_set (liststore, &iter, 3, (price), -1);
+			gtk_list_store_set (liststore, &iter, 4, (p->logo).c_str(), -1);
+			gtk_list_store_set (liststore, &iter, 5, (p->material).c_str(), -1);
+			gtk_list_store_set (liststore, &iter, 6, (p->style).c_str(),-1);
+			gtk_list_store_set (liststore, &iter, 7, (p->color).c_str(), -1);
+			gtk_list_store_set (liststore, &iter, 8, (p->function).c_str(), -1);
+		
+			p = p->Next;
+		}
+	}
+}
 
+void on_Main_update_clicked(GtkWidget *button,gpointer userdata){
+	windowShow(GTK_WIDGET(Update));
+}
+
+void on_Update_cancel_clicked(GtkWidget *button,gpointer userdata){
+	windowHide(GTK_WINDOW(Update));
+}
 
 
 
