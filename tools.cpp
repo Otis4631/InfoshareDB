@@ -69,8 +69,8 @@ void Quick_Sort(pGoodNode Begin, pGoodNode End){ // 快排
 		j = j->Next;
 	}
 	Swap(Begin, i);
-	Quick_Sort(Begin, i, Status);
-	Quick_Sort(i->Next, End, Status);
+	Quick_Sort(Begin, i);
+	Quick_Sort(i->Next, End);
 }
 
 //----------------------------------------------排序结束--------------------------------------------------------
@@ -107,11 +107,11 @@ void init_struct_node (Node *node,vector<string> * ary) {
 }
 
 
-typedef struct Hash{
+typedef struct Haha{
 	pGoodNode To;
-	struct Hash *Next;
+	struct Haha *Next;
 } Hash;
-Hash HashChart[55][60][60];
+Hash *HashChart[55][60][60];
 
 //----------------------------------------------建立哈希表------------------------------------------------------
 
@@ -126,7 +126,7 @@ void HashNode(pGoodNode Tmp){ // 顺延建立哈希
 	p1 = (p1%53 + 53)%53;
 	p2 = (p2%57 + 57)%57;
 	p3 = (p3%59 + 59)%59;
-	Hash TTmp = new Hash;
+	Hash * TTmp = new Hash;
 	TTmp->To = Tmp;
 	TTmp->Next = HashChart[p1][p2][p3];
 	HashChart[p1][p2][p3] = TTmp;
@@ -145,17 +145,19 @@ void on_file_window_ok_clicked(GtkWidget *button,gpointer userdata){
 		debug_popbox ("*** 请先选择文件名称");
 	}
 	else {
+		gtk_list_store_clear(GTK_LIST_STORE(liststore1));
 		vector<string> ary;
 		memset(HashChart, NULL, sizeof(HashChart));
 		GoodHead->Next = GoodTail;
 		GoodTail->Next = GoodHead->Ahead = NULL;
 		GoodTail->Ahead = GoodHead;
+		GoodHead->count = 0;
 		//GoodTail = GoodHead;
 		pGoodNode p;
 		
 		FILE *fp=fopen(filepath,"r");
 
-		char str[2000];
+		char str[500];
 		while(fscanf(fp,"%s",str)!=EOF)
 		{
 			ary.clear();			

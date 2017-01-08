@@ -8,6 +8,8 @@
 using namespace std;
 
 #define BUFSIZE_1K 1024
+
+
 GtkBuilder * gtk_load_glade (gchar * filename);
 
 

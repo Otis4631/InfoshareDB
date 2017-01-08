@@ -150,7 +150,7 @@ int main (int argc, char * argv[])
 	
 	/***************************   信号绑定回调函数 *****************************/
 	//g_signal_connect(Main_search,"clicked",G_CALLBACK(on_Main_search_clicked),NULL);
-	g_signal_connect(Main,"delete_event",G_CALLBACK(Main_destory),NULL);
+	g_signal_connect(Main,"delete_event",G_CALLBACK(gtk_main_quit),NULL);
 	g_signal_connect(Main_system_init,"clicked",G_CALLBACK(on_Main_system_init_clicked),NULL);
 	//g_signal_connect(Main_update,"clicked",G_CALLBACK(on_Main_update_clicked),NULL);
 	g_signal_connect(Main_sort_up,"clicked",G_CALLBACK(on_Main_sort_up_clicked),NULL);
