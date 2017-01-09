@@ -1,20 +1,15 @@
-﻿#include "gtk_pubfun.h"
+﻿#include "h/gtk_pubfun.h"
 #include <string.h>
-
 GtkBuilder * gtk_load_glade (gchar * filename)
 {
 	GtkBuilder *gb;
-	
 	// 新建对象
 	gb=gtk_builder_new ();
-
 	// 载入文件
 	if (!gtk_builder_add_from_file (gb, filename,NULL))
 		return NULL;
-
 	// 连接文件中包含的所有信号
 	gtk_builder_connect_signals(gb, NULL);
-
 	return gb;
 }
 
@@ -44,19 +39,15 @@ int init_list (GtkWidget * list, int colNum) {
 		col=gtk_tree_view_column_new_with_attributes (colName, rend, "text", i, NULL);
 		gtk_tree_view_append_column(GTK_TREE_VIEW(list), col);
 	}
-
 	return 0;
 }
 int getColNum(GtkWidget * widget) {
 	GtkTreeModel * model;
 	int columns=0;//TreeView的列数
-
 	model=gtk_tree_view_get_model(GTK_TREE_VIEW(widget));//得到TREEVIEW的model
 	columns=gtk_tree_model_get_n_columns(model);//获取列数
-
 	return columns;
 }
-
 bool update_to_list (GtkWidget * widget, GtkTreeIter * iter, 
 	int icol, const gchar* str) 
 {
@@ -64,7 +55,6 @@ bool update_to_list (GtkWidget * widget, GtkTreeIter * iter,
 		return false;
 	}
 	gtk_list_store_set (GTK_LIST_STORE(widget), iter, icol, str, -1);
-
 	return true;
 }
 
@@ -72,16 +62,13 @@ bool add_to_list(GtkWidget * list, vector<string> * colValues, int colNum) {
 	GtkListStore * store;
 	GtkTreeIter iter;
 	int i=0;
-
 	store=GTK_LIST_STORE(list);
 	gtk_list_store_append(store, &iter);
 	for (i=0; i < colNum && i<colValues->size(); i++) {
 		gtk_list_store_set (store, &iter, i, colValues->at(i).c_str(), -1);
 	}
-
 	return true;
 }
-
 //弹出对话框，显示指定文本
 void debug_popbox(const gchar * str, GtkWidget * widget, GtkTreeIter* iter)
 {
