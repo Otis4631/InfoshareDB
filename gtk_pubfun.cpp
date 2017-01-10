@@ -1,6 +1,6 @@
 ﻿#include "h/gtk_pubfun.h"
 #include <string.h>
-GtkBuilder * gtk_load_glade (gchar * filename)
+GtkBuilder * gtk_load_glade (const gchar * filename)
 {
 	GtkBuilder *gb;
 	// 新建对象
@@ -49,24 +49,11 @@ int getColNum(GtkWidget * widget) {
 	return columns;
 }
 bool update_to_list (GtkWidget * widget, GtkTreeIter * iter, 
-	int icol, const gchar* str) 
-{
+	int icol, const gchar* str){
 	if (icol<1 || str==NULL) {
 		return false;
 	}
 	gtk_list_store_set (GTK_LIST_STORE(widget), iter, icol, str, -1);
-	return true;
-}
-
-bool add_to_list(GtkWidget * list, vector<string> * colValues, int colNum) {
-	GtkListStore * store;
-	GtkTreeIter iter;
-	int i=0;
-	store=GTK_LIST_STORE(list);
-	gtk_list_store_append(store, &iter);
-	for (i=0; i < colNum && i<colValues->size(); i++) {
-		gtk_list_store_set (store, &iter, i, colValues->at(i).c_str(), -1);
-	}
 	return true;
 }
 //弹出对话框，显示指定文本
@@ -81,13 +68,6 @@ void debug_popbox(const gchar * str, GtkWidget * widget, GtkTreeIter* iter)
 		str,
 		NULL);
 	gtk_dialog_run(GTK_DIALOG(dialog));	//显示dialog对话框并等待按钮,在有按钮按下之后继续
-
-	// tmp： 演示示例用，将当前活动行到第2列值改为AAAA
-	/*if (widget!=NULL && iter!=NULL) {
-		GtkListStore * store=GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(widget)));
-		update_to_list (GTK_WIDGET(store), iter, 1, "AAAA");
-	}*/
-
 	gtk_widget_destroy(dialog);			//销毁dialog对话框
 }
 

@@ -4,14 +4,14 @@
 #include "h/gtk_pubfun.h"
 #include <stdlib.h>
 
-//¼ÓÔØµÄglade²¼¾ÖÎÄ¼şµÄÃû³Æ
+//åŠ è½½çš„gladeå¸ƒå±€æ–‡ä»¶çš„åç§°
 #define FPATH_GLADE "./img/1.glade"
 #define w_(builder,type,name) name=GTK_##type(gtk_builder_get_object(builder,#name))
 
-pGoodNode GoodHead = new GoodNode,GoodTail = new GoodNode; //ÉùÃ÷ÄÚ²¿Á´±íÍ·Î²½Úµã¡£
+pGoodNode GoodHead = new GoodNode,GoodTail = new GoodNode; //å£°æ˜å†…éƒ¨é“¾è¡¨å¤´å°¾èŠ‚ç‚¹
 pGoodNode P;
 bool Sequence;
-/***************   Ö÷½çÃæÉùÃ÷   **********************/
+/***************   ä¸»ç•Œé¢å£°æ˜   **********************/
 GtkButton 	* Main_about;
 GtkButton 	* Main_search;
 GtkButton 	* Main_up;
@@ -32,12 +32,12 @@ GtkTreeView *Main_treeview;
 
 GtkWindow	*Main;
 
-GtkWidget *liststore1;
-GtkWidget *liststore2;
-/***************** Ö÷½çÃæÉùÃ÷½áÊø **********************/
+GtkListStore *liststore1;
+GtkListStore *liststore2;
+/***************** ä¸»ç•Œé¢å£°æ˜ç»“æŸ **********************/
 
 
-/*****************    ÎïÁ÷½çÃæ    **********************/
+/*****************    ç‰©æµç•Œé¢    **********************/
 GtkEntry	* Transport_city1;
 GtkEntry	* Transport_city2;
 GtkEntry	* Transport_t_route;
@@ -49,29 +49,30 @@ GtkButton 	* Transport_search;
 GtkButton 	* Transport_cancel;
 
 GtkWindow	* Transport;
-/*****************    ÎïÁ÷½çÃæ½áÊø   **********************/
+/*****************    ç‰©æµç•Œé¢ç»“æŸ   **********************/
 
 
-/*****************    ÉÌÆ·ĞÅÏ¢¸üĞÂ   **********************/
+/*****************    å•†å“ä¿¡æ¯æ›´æ–°   **********************/
 GtkWindow	* Update;
 GtkComboBox * Update_combox;
 GtkEntry 	* Update_input;
 GtkButton	* Update_ok;
 GtkButton	* Update_cancel;
-/*****************    ÉÌÆ·ĞÅÏ¢¸üĞÂ½áÊø ********************/
+/*****************    å•†å“ä¿¡æ¯æ›´æ–°ç»“æŸ  ********************/
 
 
-/*****************   ÎÄ¼şÑ¡Ôñ¶Ô»°¿ò    ********************/
+/*****************   æ–‡ä»¶é€‰æ‹©å¯¹è¯æ¡†    ********************/
 GtkWindow 	* file_window;
 GtkFileChooser 	*filechooser;
 GtkButton	* file_window_ok;
 GtkButton	* file_window_cancel;
-/*****************   ÎÄ¼şÑ¡Ôñ¶Ô»°¿ò½áÊø ********************/
-GtkWindow	* About;
-GtkButton 	* About_ok;
+/*****************   æ–‡ä»¶é€‰æ‹©å¯¹è¯æ¡†ç»“æŸ ********************/
+
 
 GtkWindow	* Welcome;
 GtkButton	* Welcome_ok;
+
+GtkAboutDialog	*About;
 
 
 
@@ -80,7 +81,6 @@ void get_widgets (GtkBuilder * gb){
 	w_(gb, WINDOW, Transport);
 	w_(gb, WINDOW, Update);
 	w_(gb, WINDOW, file_window);
-	w_(gb, WINDOW, About);
 	w_(gb, WINDOW, Welcome);
 
 	w_(gb, BUTTON, Main_about);
@@ -119,12 +119,12 @@ void get_widgets (GtkBuilder * gb){
 	
 	
 	w_(gb, TREE_VIEW, Main_treeview);
-	w_(gb, WIDGET,liststore1);
-	w_(gb, WIDGET,liststore2);
+	w_(gb, LIST_STORE,liststore1);
+	w_(gb, LIST_STORE,liststore2);
 	w_(gb,COMBO_BOX,Update_combox);
 	
-	w_(gb, BUTTON, About_ok);
 	w_(gb, BUTTON, Welcome_ok);
+	w_(gb, ABOUT_DIALOG, About);
 }
 void on_Welcome_ok_clicked(GtkWidget *button,gpointer userdata){
   gtk_widget_show_all (GTK_WIDGET(Main));
@@ -135,18 +135,18 @@ int main (int argc, char * argv[])
 {
 	GtkBuilder *gb;
 
-	/*³õÊ¼»¯gtk»·¾³£¬¼ÓÔØglade²¼¾ÖÎÄ¼ş£¬Éú³É½Ó¿Úgb*/
+	/*åˆå§‹åŒ–gtkç¯å¢ƒï¼ŒåŠ è½½gladeå¸ƒå±€æ–‡ä»¶ï¼Œç”Ÿæˆæ¥å£gb*/
 	gtk_init (&argc, &argv);
-	gb=gtk_load_glade (FPATH_GLADE);
+	gb=gtk_load_glade(FPATH_GLADE);
 	if (gb == NULL) {
 		g_print("** fail load glade file:%s\n", FPATH_GLADE);
 		return -1;
 	}
 	g_print("== load success\n");
-	/*³õÊ¼»¯×Ô¼º²¼¾Ö±äÁ¿£¬²¢Íê³ÉÏàÓ¦³õÊ¼»¯²¼¾Ö*/
-	get_widgets (gb);// ´Ó½Ó¿ÚgbÖĞÌáÈ¡ĞèÒª²Ù×÷µÄ¿Ø¼ş£¨Èç¹ûÒªÔö¼õ£¬Çëµ½¸Ãº¯ÊıÄÚ²¿µ÷Õû£©
-	mywidget_init ();// ÏÔÊ¾´°¿Ú¼°¿Ø¼ş show
-	/***************************   ĞÅºÅ°ó¶¨»Øµ÷º¯Êı *****************************/
+	/*åˆå§‹åŒ–è‡ªå·±å¸ƒå±€å˜é‡ï¼Œå¹¶å®Œæˆç›¸åº”åˆå§‹åŒ–å¸ƒå±€*/
+	get_widgets (gb);// ä»æ¥å£gbä¸­æå–éœ€è¦æ“ä½œçš„æ§ä»¶ï¼ˆå¦‚æœè¦å¢å‡ï¼Œè¯·åˆ°è¯¥å‡½æ•°å†…éƒ¨è°ƒæ•´ï¼‰
+	mywidget_init ();// æ˜¾ç¤ºçª—å£åŠæ§ä»¶ show
+	/***************************   ä¿¡å·ç»‘å®šå›è°ƒå‡½æ•° *****************************/
 	g_signal_connect(Main_search,"clicked",G_CALLBACK(on_Main_search_clicked),NULL);
 	g_signal_connect(Main,"delete_event",G_CALLBACK(gtk_main_quit),NULL);
 	g_signal_connect(Update,"delete_event",GTK_SIGNAL_FUNC(gtk_widget_hide),GTK_WIDGET(Update));
@@ -174,12 +174,11 @@ int main (int argc, char * argv[])
 	
 	g_signal_connect(Update_ok,"clicked",G_CALLBACK(on_Update_ok_clicked),NULL);
 	g_signal_connect(Update_cancel,"clicked",G_CALLBACK(on_Update_cancel_clicked),NULL);
-	g_signal_connect(About_ok,"clicked",G_CALLBACK(on_About_ok_clicked),NULL);
 
 	g_signal_connect(Welcome_ok,"clicked",G_CALLBACK(on_Welcome_ok_clicked),NULL);
 	g_signal_connect(file_window_ok,"clicked",G_CALLBACK(on_file_window_ok_clicked),NULL);
 	g_signal_connect(file_window_cancel,"clicked",G_CALLBACK(on_file_window_cancel_clicked),NULL);
-	gtk_main ();//ÊØ»¤³ÌĞò£¬±£Ö¤ÏÔÊ¾µÄ´°¿Ú²»ÍË³ö
+	gtk_main ();//å®ˆæŠ¤ç¨‹åºï¼Œä¿è¯æ˜¾ç¤ºçš„çª—å£ä¸é€€å‡º
 	
 	return 0;
 }

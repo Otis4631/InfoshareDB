@@ -36,7 +36,9 @@ extern GtkTreeView *Main_treeview;
 
 extern GtkWindow	*Main;
 
-extern GtkWidget *liststore1;
+
+extern GtkListStore *liststore1;
+extern GtkListStore *liststore2;
 
 extern GtkEntry	*Main_key;
 
@@ -73,26 +75,17 @@ extern GtkFileChooser 	*filechooser;
 extern GtkButton	* file_window_ok;
 extern GtkButton	* file_window_cancel;
 /*****************   文件选择对话框结束 ********************/
-extern GtkWindow	* About;
-extern GtkButton 	* About_ok;
 
 extern GtkWindow	* Welcome;
 extern GtkButton	* Welcome_ok;
+extern GtkAboutDialog 	*About;
 
 
 typedef struct Node {
 	
 	int Hasharr[20];
 	struct Node *Ahead,*Next;
-	string name;
-	string city;
-	string  count; //库存
-	string  price; 
-	string logo; //品牌
-	string material; // 材质
-	string style; //款式
-	string color;
-	string function;//功能特点
+	char Info[9][60]; // 信息
 	int int_price;
 }GoodNode, *pGoodNode;
 
@@ -114,7 +107,6 @@ void on_Update_ok_clicked(GtkWidget *button,gpointer userdata);
 void on_Main_down_clicked(GtkWidget *button,gpointer userdata);
 void on_Main_up_clicked(GtkWidget *button,gpointer userdata);
 void on_Main_about_clicked(GtkWidget *button,gpointer userdata);
-void on_About_ok_clicked(GtkWidget *button,gpointer userdata);
 void on_Transport_search_clicked(GtkWidget *button,gpointer userdata);
 void on_Transport_cancel_clicked(GtkWidget *button,gpointer userdata);
 void on_Main_pgup_clicked (GtkWidget *button,gpointer userdata);
@@ -122,30 +114,6 @@ void on_Main_pgdown_clicked (GtkWidget *button,gpointer userdata);
 
 void DisplayPath1(int u,int v);
 void DisplayPath2(int u,int v);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 #endif

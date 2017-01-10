@@ -1,5 +1,8 @@
-﻿#include "h/tools.h"
+#include "h/tools.h"
 #include "h/gtk_pubfun.h"
+#define M1 65
+#define M2 67
+#define M3 69
 void BKDHash(string Aim, int &u, int &v){ // 字符串哈希
 	int HH1 = 0, HH2 = 0, seed1 = 137, seed2 = 131;
 	for(int i = 0; Aim[i]; i ++){
@@ -14,7 +17,7 @@ extern pGoodNode GoodHead,GoodTail;
 extern pGoodNode P;
 //---------------------------------------------*********************排序***************-----------------------------------------------
 bool Cmp(pGoodNode u, pGoodNode v){ // 判断
-	return u->int_price < v->int_price;
+	return u->int_price < v->int_price; 
 }
 
 void Swap(pGoodNode &u, pGoodNode &v){ // 交换
@@ -59,56 +62,41 @@ void Quick_Sort(pGoodNode Begin, pGoodNode End){ // 快排
 }
 
 //----------------------------------------------排序结束--------------------------------------------------------
-void init_struct_node (Node *node,vector<string> * ary) {
-		node->name = ary->at(0);
-		BKDHash(node->name,node->Hasharr[1], node->Hasharr[2]);
-
-		node->city=ary->at(1);
-		BKDHash(node->city,node->Hasharr[3], node->Hasharr[4]);
-
-		node->count= ary->at(2);
-		BKDHash(ary->at(2),node->Hasharr[5], node->Hasharr[6]);
-
-		node->price = ary->at(3);
-		node->int_price = atoi(ary->at(3).c_str());
-		BKDHash(ary->at(3),node->Hasharr[7], node->Hasharr[8]);
-
-		node->logo=ary->at(4);
-		BKDHash(node->logo,node->Hasharr[9], node->Hasharr[10]);
-
-		node->material=ary->at(5);
-		BKDHash(node->material,node->Hasharr[11], node->Hasharr[12]);
-
-		node->style=ary->at(6);
-		BKDHash(node->style,node->Hasharr[13], node->Hasharr[14]);
-
-		node->color=ary->at(7);
-		BKDHash(node->color,node->Hasharr[15], node->Hasharr[16]);
-
-		node->function=ary->at(8);
-		BKDHash(node->function,node->Hasharr[17], node->Hasharr[18]);
-
+void init_struct_node (Node *node, char *Aim) {
+	int pos = 0, sum = 0;
+	for(int i = 0, j = 0; i < 9; ){
+		if(Aim[pos] == ';' || Aim[pos] == '\0'){
+			node->Info[i][j] = '\0';
+			BKDHash(node->Info[i], node->Hasharr[i*2+1], node->Hasharr[i*2+2]);
+			j = 0;
+			i ++;
+			pos ++;
+		}
+		else node->Info[i][j ++] = Aim[pos ++];
+	}
+	for(int i = 0; node->Info[3][i] != '\0'; i ++) sum = sum*10 + (node->Info[3][i] - '0');
+	node->int_price = sum;
 }
 
 typedef struct Haha{
 	pGoodNode To;
 	struct Haha *Next;
 } Hash;
-Hash *HashChart[55][60][60];
+Hash *HashChart[70][70][70];
 
 //----------------------------------------------建立哈希表,Hash查找------------------------------------------------------
 void HashNode(pGoodNode Tmp){ // 顺延建立哈希
-	string Aim;
-	Aim = Tmp->name;
+	char *Aim;
+	Aim = Tmp->Info[0];
 	int p1 = 0, p2 = 0, p3 = 0;
 	for(int i = 0; Aim[i] != '\0'; i ++){
 		if(i%3 == 0) p1 += Aim[i];
 		else if(i%3 == 1) p2 += Aim[i];
 		else p3 += Aim[i];
 	}
-	p1 = (p1%53 + 53)%53;
-	p2 = (p2%57 + 57)%57;
-	p3 = (p3%59 + 59)%59;
+	p1 = (p1%M1 + M1)%M1;
+	p2 = (p2%M2 + M2)%M2;
+	p3 = (p3%M3 + M3)%M3;
 	Hash * TTmp = new Hash;
 	TTmp->To = Tmp;
 	TTmp->Next = HashChart[p1][p2][p3];
@@ -122,12 +110,12 @@ pGoodNode HashFind(char *Aim, int Status){ // 查找
 		else if(i%3 == 1) p2 += Aim[i];
 		else p3 += Aim[i];
 	}
-	p1 = (p1%53 + 53)%53;
-	p2 = (p2%57 + 57)%57;
-	p3 = (p3%59 + 59)%59;
+	p1 = (p1%M1 + M1)%M1;
+	p2 = (p2%M2 + M2)%M2;
+	p3 = (p3%M3 + M3)%M3;
 	Hash *Record = HashChart[p1][p2][p3], *fft;
 	if(!Record) return NULL;
-	if(!strcmp(Aim, (Record->To->name).c_str())){
+	if(!strcmp(Aim, Record->To->Info[0])){
 		if(Status) return Record->To;
 		else{
 			pGoodNode QAQ = Record->To;
@@ -138,7 +126,7 @@ pGoodNode HashFind(char *Aim, int Status){ // 查找
 	}
 	while(Record->Next){
 		fft = Record->Next;
-		if(!strcmp(Aim, (fft->To->name).c_str())) break;
+		if(!strcmp(Aim, fft->To->Info[0])) break;
 		Record = fft;
 	}
 	if(Status) return Record->Next? Record->Next->To: NULL;
@@ -151,9 +139,9 @@ pGoodNode HashFind(char *Aim, int Status){ // 查找
 }
 void Free_Hash(){ // 释放哈希
 	Hash *p1, *p2;
-	for(int i = 0; i < 53; i ++){
-		for(int j = 0; j < 57; j ++){
-			for(int k = 0; k < 59; k ++){
+	for(int i = 0; i < M1; i ++){
+		for(int j = 0; j < M2; j ++){
+			for(int k = 0; k < M3; k ++){
 				if(HashChart[i][j][k] == NULL) continue;
 				p1 = HashChart[i][j][k];
 				HashChart[i][j][k] = NULL;
@@ -176,6 +164,14 @@ void Free_Node(pGoodNode Begin, pGoodNode End){ // 释放内存
 	End->Ahead = Begin;
 }
 //----------------------------------------------Hash查找结束------------------------------------------------------------
+bool Judge_Num(const gchar *Aim){
+	for(int i = 0; Aim[i] != '\0'; i ++){
+		if(Aim[i] >= '0' && Aim[i] <= '9') continue;
+		return false;
+	}
+	return true;
+}
+
 bool Judge(pGoodNode Temp, int w[], int sum){
 	if(!sum) return true;
 	int record = 0;
@@ -191,18 +187,9 @@ void set_one_to_list(pGoodNode p){ 	//根据链表节点更新一条信息。
 	GtkTreeIter iter;
 	liststore = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(Main_treeview)));
 	gtk_list_store_append(liststore, &iter);
-		gtk_list_store_set (liststore, &iter,
-				    0, (p->name).c_str(),
-				    1, (p->city).c_str(),
-				    2, (p->count).c_str(),
-				    3, (p->price).c_str(),
-				    4, (p->logo).c_str(),
-				    5, (p->material).c_str(),
-				    6, (p->style).c_str(),
-				    7, (p->color).c_str(),
-				    8, (p->function).c_str(),
-				    -1);
-	
+	for(int i = 0; i < 9; i ++){
+		gtk_list_store_set (liststore, &iter, i, p->Info[i], -1);
+	}
 }
 /*--------------------------------Main_system_init--------------------------*/
 void on_Main_system_init_clicked(GtkWidget * button,gpointer userdata){
@@ -221,7 +208,6 @@ void on_file_window_ok_clicked(GtkWidget *button,gpointer userdata){
 	}
 	else {
 		gtk_list_store_clear(GTK_LIST_STORE(liststore1));
-		vector<string> ary;
 		Free_Hash();
 		Free_Node(GoodHead, GoodTail);
 		GoodHead->int_price = 0;
@@ -231,21 +217,15 @@ void on_file_window_ok_clicked(GtkWidget *button,gpointer userdata){
 
 		char str[500];
 		while(fscanf(fp,"%s",str)!=EOF)
-		{
-			ary.clear();			
-			ary.push_back (str);
-			boost::split( ary, str, boost::is_any_of( ";" ), boost::token_compress_on );  
-			GoodNode onenode;
-			init_struct_node(&onenode,&ary);
-			//---------------------------顺序建立链表，AllGoodHead 为头节点，AllGoodTail 为未节点。
-			p = new Node; 			
-			(*p) = onenode;
+		{ 
+			p = new Node;
+			init_struct_node(p,str);
+			//---------------------------顺序建立链表，AllGoodHead 为头节点，AllGoodTail 为未节点。 			
 			p->Ahead = GoodHead;
 			p->Next = GoodHead->Next;
 			p->Next->Ahead = p;
 			GoodHead->Next = p;
 			//-------------------------------------------------------------------------------------
-			
 			HashNode(p);
 		}
 		P = Sequence? GoodHead->Next: GoodTail->Ahead;
@@ -278,9 +258,7 @@ void on_Main_sort_up_clicked(GtkWidget *button,gpointer userdata){
 		GoodHead->int_price = 1;
 	}
 	Sequence = true;
-	GtkListStore * liststore;
-	liststore = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(Main_treeview)));
-	gtk_list_store_clear(GTK_LIST_STORE(liststore));
+	gtk_list_store_clear(GTK_LIST_STORE(liststore1));
 	Sequence = true;
 	P = GoodHead->Next;
 	pGoodNode p = P;
@@ -308,9 +286,7 @@ void on_Main_sort_down_clicked(GtkWidget *button,gpointer userdata){
 		GoodHead->int_price = 1;
 	}
 	Sequence = false;
-	GtkListStore * liststore;
-	liststore = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(Main_treeview)));
-	gtk_list_store_clear(GTK_LIST_STORE(liststore));
+	gtk_list_store_clear(GTK_LIST_STORE(liststore1));
 	Sequence = false;
 	P = GoodTail->Ahead;
 	pGoodNode p = P;
@@ -335,9 +311,7 @@ void on_Main_search_clicked(GtkWidget *button,gpointer userdata){
 	int KEY[20];
 	char Get_Str[300];
 	strcpy(Get_Str, gtk_entry_get_text(GTK_ENTRY(Main_key)));
-	GtkListStore * liststore;
-	liststore = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(Main_treeview)));
-	gtk_list_store_clear(GTK_LIST_STORE(liststore));
+	gtk_list_store_clear(liststore1);
 	string keke;
 	int num = 0, last = 0, pos = 0;
 	while(1){
@@ -348,7 +322,7 @@ void on_Main_search_clicked(GtkWidget *button,gpointer userdata){
 		BKDHash(keke.assign(Get_Str, last, pos - last), KEY[num+1], KEY[num+2]);
 		num += 2;
 	}
-	g_print("\n");
+
 	P = Sequence? GoodHead->Next: GoodTail->Ahead;
 	pGoodNode p = P;
 	int gg = 0;
@@ -365,7 +339,7 @@ void on_Main_search_clicked(GtkWidget *button,gpointer userdata){
 	time = 1000000*(etime.tv_sec - stime.tv_sec) + (etime.tv_usec - stime.tv_usec);
 	time /= 1000000;
 	const gchar cstr[] = "搜索已完成，用时：";
-	g_print("%s%fs\n",cstr,time);d
+	g_print("%s%fs\n",cstr,time);
 }
 //-------------------------双击TreeView显示基本信息-----------------------------------------
 void on_Main_treeview_clicked(GtkWidget *widget,gpointer userdata){
@@ -399,24 +373,44 @@ void on_Update_ok_clicked(GtkWidget *button,gpointer userdata){
 
      GtkTreeIter iter  = {0};
      GValue value[1] = {0};
-     char str[100] ;
-     GtkTreeStore* store  = NULL;
+     char str[100] = {0};
+
+     GtkTreeStore* store  =  NULL;
      GtkTreeSelection* selection = NULL;
-     selection = gtk_tree_view_get_selection(Main_treeview);  
-     gtk_tree_selection_get_selected(selection, (GtkTreeModel**)&store, &iter);
+     selection = gtk_tree_view_get_selection(Main_treeview); 
+
+     if(!gtk_tree_selection_get_selected(selection, (GtkTreeModel**)&store, &iter)){
+		debug_popbox("请先选择需要更新的商品！");
+		gtk_widget_hide(GTK_WIDGET(Update));
+		return ;
+	}
      gtk_tree_model_get_value(GTK_TREE_MODEL(store), &iter, 0, &value[0]);
      strcpy(str, g_value_get_string(&value[0]));
      pGoodNode p = HashFind(str, 1);
      gint row;
      row = gtk_combo_box_get_active(Update_combox);
-     if(row == -1)
-     {
-     	debug_popbox("请先选择需要更新的条目！");
-     }
+     if(row == -1){
+     	 debug_popbox("请先选择需要更新的条目！");
+      }
      else{
-	 GtkListStore * liststore;
-	 liststore = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(Main_treeview)));
-	 update_to_list (GTK_WIDGET(liststore),&iter, row, gtk_entry_get_text(Update_input));
+	 const gchar *str;
+	 str = gtk_entry_get_text(Update_input);
+	 if(Judge_Num(str)){
+		 update_to_list(GTK_WIDGET(liststore1),&iter, row+2, str);	
+		 if(row == 0){
+			strcpy(p->Info[2], str);
+			BKDHash(p->Info[2], p->Hasharr[5], p->Hasharr[6]);
+		 }
+		 else{
+		 	strcpy(p->Info[3],str);
+			BKDHash(p->Info[3], p->Hasharr[7], p->Hasharr[8]);
+			int sum = 0;
+			for(int i = 0; p->Info[3][i] != '\0'; i ++) sum = sum*10 + (p->Info[3][i] - '0');
+			p->int_price = sum;
+	 	}
+	 }
+	 else debug_popbox("请输入正确的信息！");
+	
 	 gtk_widget_hide(GTK_WIDGET(Update));
      
      }
@@ -432,9 +426,7 @@ void on_file_select_down_ok(GtkWidget * button,GtkFileSelection *fs){
 	if (filename == NULL||strlen(filename)<5) 
 		debug_popbox ("请先选择文件名称");
 	else {
-		GtkListStore * liststore;
-		liststore = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(Main_treeview)));
-		gtk_list_store_clear(GTK_LIST_STORE(liststore));
+		gtk_list_store_clear(GTK_LIST_STORE(liststore1));
 		char temp[BUFSIZE_1K];
 		char str[BUFSIZE_1K];
 		pGoodNode p;
@@ -451,18 +443,16 @@ void on_file_select_down_ok(GtkWidget * button,GtkFileSelection *fs){
 			Sr->Next = SSr;
 			SSr->Ahead = Sr;
 			delete p;
-		}
-		if(GoodHead->Next != GoodTail){	
-			P = Sequence? GoodHead->Next: GoodTail->Ahead;
-			p = P;
-			int gg = 0;
-			while(gg < 20){
-				if(Sequence && p == GoodTail) break;
-				else if(!Sequence && p == GoodHead) break;
-				set_one_to_list(p);
-				p = Sequence? p->Next: p->Ahead;
-				gg ++;
-			}
+		}	
+		P = Sequence? GoodHead->Next: GoodTail->Ahead;
+		p = P;
+		int gg = 0;
+		while(gg < 20){
+			if(Sequence && p == GoodTail) break;
+			else if(!Sequence && p == GoodHead) break;
+			set_one_to_list(p);
+			p = Sequence? p->Next: p->Ahead;
+			gg ++;
 		}
 		gtk_widget_destroy(GTK_WIDGET(fs));	//销毁文件选则对话框 fs}
 	}
@@ -482,29 +472,19 @@ void on_file_select_up_ok(GtkWidget * button,GtkFileSelection *fs){
 	if (filename == NULL||strlen(filename)<5) 
 		debug_popbox ("请先选择文件名称");
 	else {
-		vector<string> ary;
-		GtkListStore * liststore;
-		liststore = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(Main_treeview)));
-		gtk_list_store_clear(GTK_LIST_STORE(liststore));
+		gtk_list_store_clear(GTK_LIST_STORE(liststore1));
 		pGoodNode p;
 		FILE *fp =	fopen(filename,"r");
 		char str[500];
-		while(fscanf(fp,"%s",str)!=EOF)
-		{
-			ary.clear();			
-			ary.push_back (str);
-			boost::split( ary, str, boost::is_any_of( ";" ), boost::token_compress_on );  
-			GoodNode onenode;
-			init_struct_node(&onenode,&ary);
-			//---------------------------顺序建立链表，AllGoodHead 为头节点，AllGoodTail 为未节点。
-			p = new Node; 			
-			(*p) = onenode;
+		while(fscanf(fp,"%s",str)!=EOF){
+			p = new Node;
+			init_struct_node(p,str);
+			//---------------------------顺序建立链表，AllGoodHead 为头节点，AllGoodTail 为未节点。 			
 			p->Ahead = GoodHead;
 			p->Next = GoodHead->Next;
 			p->Next->Ahead = p;
 			GoodHead->Next = p;
 			//-------------------------------------------------------------------------------------
-			
 			HashNode(p);
 		}
 		P = Sequence? GoodHead->Next: GoodTail->Ahead;
@@ -523,7 +503,7 @@ void on_file_select_up_ok(GtkWidget * button,GtkFileSelection *fs){
 	gettimeofday(&etime,NULL);
 	time = 1000000*(etime.tv_sec - stime.tv_sec) + (etime.tv_usec - stime.tv_usec);
 	time /= 1000000;
-	const gchar cstr[] = "下架已完成，用时：";
+	const gchar cstr[] = "上架已完成，用时：";
 	g_print("%s%lfs\n",cstr,time);
 }
 void on_Main_up_clicked(GtkWidget *button,gpointer userdata){
@@ -700,111 +680,84 @@ void DisplayPath2(int u,int v)
 }
 
 void on_Main_pgdown_clicked (GtkWidget *button,gpointer userdata){
-	char Get_Str[300];
+	int KEY[20], num = 0, j, pos = 0, gg = 0;
+	char Get_Str[300], keke[60];
+	pGoodNode p = P, record;
 	strcpy(Get_Str, gtk_entry_get_text(GTK_ENTRY(Main_key)));
-	string keke;
-	int num = 0, last = 0, pos = 0, KEY[20], gg = 0;
 	while(1){
 		while(Get_Str[pos] == ' ') pos ++;
-		last = pos;
 		if(Get_Str[pos] == '\0') break;
-		while(Get_Str[pos] != ' ' && Get_Str[pos] != '\0') pos ++;
-		BKDHash(keke.assign(Get_Str, last, pos - last), KEY[num+1], KEY[num+2]);
-		num += 2;
+		j = 0;
+		while(Get_Str[pos] != ' ' && Get_Str[pos] != '\0') keke[j ++] = Get_Str[pos ++];
+		keke[j] = '\0';
+		num ++;
+		BKDHash(keke, KEY[num*2-1], KEY[num*2]);
 	}
-	pGoodNode p = P;
+	
 	while(gg < 20){
-		if(Sequence && p != GoodTail) break;
-		else if(!Sequence && p != GoodHead) break;
-		if(Judge(p, KEY, num/2)) gg ++;
+		if(p == GoodTail || p == GoodHead) break;
+		if(Judge(p, KEY, num)) gg ++;
 		p = Sequence? p->Next: p->Ahead;
 	}
 	if(gg < 20){
 		debug_popbox("已经到最后一页！");
 		return;
 	}
-	pGoodNode record = p;
-	gg = 0;
-	while(gg < 20){
-		if(Sequence && p != GoodTail) break;
-		else if(!Sequence && p != GoodHead) break;
-		if(Judge(p, KEY, num/2))gg ++;
+	record = p;
+	while(1){
+		if(p == GoodTail || p == GoodHead) break;
+		if(Judge(p, KEY, num)){
+			gg --;
+			break;
+		}
 		p = Sequence? p->Next: p->Ahead;
 	}
-	if(gg == 0){
+	if(gg == 20){
 		debug_popbox("已经到最后一页！");
-		record = NULL;
 		return;
 	}
 	gtk_list_store_clear(GTK_LIST_STORE(liststore1));
-	P = p = record;
-	gg = 0;
+	P = p = record, gg = 0;
 	while(gg < 20){
-		if(Sequence && p != GoodTail) break;
-		else if(!Sequence && p != GoodHead) break;
-		if(Judge(p, KEY, num/2)){
-			set_one_to_list(p);
-			gg ++;
-		}
+		if(p == GoodTail || p == GoodHead) break;
+		if(Judge(p, KEY, num)) set_one_to_list(p), gg ++;
 		p = Sequence? p->Next: p->Ahead;
 	}
 }
+
 void on_Main_pgup_clicked (GtkWidget *button,gpointer userdata){
-	char Get_Str[300];
+	int KEY[20], num = 0, j, pos = 0, gg = 0;
+	char Get_Str[300], keke[60];
+	pGoodNode p;
 	strcpy(Get_Str, gtk_entry_get_text(GTK_ENTRY(Main_key)));
-	string keke;
-	int num = 0, last = 0, pos = 0, KEY[20], gg = 0;
 	while(1){
 		while(Get_Str[pos] == ' ') pos ++;
-		last = pos;
 		if(Get_Str[pos] == '\0') break;
-		while(Get_Str[pos] != ' ' && Get_Str[pos] != '\0') pos ++;
-		BKDHash(keke.assign(Get_Str, last, pos - last), KEY[num+1], KEY[num+2]);
-		num += 2;
+		j = 0;
+		while(Get_Str[pos] != ' ' && Get_Str[pos] != '\0') keke[j ++] = Get_Str[pos ++];
+		keke[j] = '\0';
+		num ++;
+		BKDHash(keke, KEY[num*2-1], KEY[num*2]);
 	}
-	pGoodNode p = P;
-	while(gg < 20){
-		if(Sequence && p != GoodTail) break;
-		else if(!Sequence && p != GoodHead) break;
-		if(Judge(p, KEY, num/2)) gg ++;
+	p = Sequence? P->Ahead: P->Next;
+	while(1){
+		if(p == GoodHead || p == GoodTail) break;
+		if(Judge(p, KEY, num)) gg ++;
+		if(gg == 20) break;
 		p = Sequence? p->Ahead: p->Next;
 	}
-	if(gg < 20){
-		debug_popbox("已经到最后一页！");
+	if(gg == 0){
+		debug_popbox("已经到最新一页！");
 		return;
 	}
-	pGoodNode record = p;
-	gg = 0;
+	gtk_list_store_clear(GTK_LIST_STORE(liststore1));
+	P = p, gg = 0;
 	while(gg < 20){
-		if(Sequence && p != GoodTail) break;
-		else if(!Sequence && p != GoodHead) break;
-		if(Judge(p, KEY, num/2)) gg ++;
-		p = Sequence? p->Next: p->Ahead;
-	}
-	if(!gg){
-		debug_popbox("已经到最后一页！");
-		return;
-	}
-	P = p = record;
-	while(gg < 20){
-		if(Sequence && p != GoodTail) break;
-		else if(!Sequence && p != GoodHead) break;
-		if(Judge(p, KEY, num/2)){
-			set_one_to_list(p);
-			gg ++;
-		}
+		if(p == GoodTail || p == GoodHead) break;
+		if(Judge(p, KEY, num)) set_one_to_list(p), gg ++;
 		p = Sequence? p->Next: p->Ahead;
 	}
 }
-
-
-
-
-
-
-
-
-
 
 void on_Transport_cancel_clicked(GtkWidget *button, gpointer userdata){
     	gtk_widget_hide(GTK_WIDGET(Transport));
@@ -824,7 +777,5 @@ void on_Main_transport_clicked(GtkWidget *button,gpointer userdata){
 void on_Main_about_clicked(GtkWidget *button,gpointer userdata){
 	gtk_widget_show(GTK_WIDGET(About));
 }
-void on_About_ok_clicked(GtkWidget *button,gpointer userdata){
-	gtk_widget_hide(GTK_WIDGET(About));
-}
+
 
